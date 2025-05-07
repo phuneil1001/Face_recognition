@@ -1,11 +1,18 @@
 import cv2
 import face_recognition
 import numpy as np
+import glob  
 
 # Tải hình ảnh mẫu chứa khuôn mặt cần nhận diện
-# load tat ca hinh anh cac file co duoi .jpg trong thu muc data_img
-reference_images = face_recognition.load_image_file(r"C:\Users\ADMIN\Desktop\face_recognition\data_img\*.jpg")
-reference_encodings = face_recognition.face_encodings(reference_images)
+# Lấy tất cả các file .jpg trong thư mục data_img
+image_paths = glob.glob('data_img/*.jpg')  # Sử dụng dấu / cho đường dẫn
+reference_encodings = []
+
+for img_path in image_paths:
+    image = face_recognition.load_image_file(img_path)
+    encodings = face_recognition.face_encodings(image)
+    if encodings:
+        reference_encodings.append(encodings[0])
 
 # Khởi tạo webcam
 cap = cv2.VideoCapture(0)
@@ -32,7 +39,7 @@ while True:
     # Duyệt qua từng khuôn mặt được phát hiện
     for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
         # So sánh khuôn mặt với khuôn mặt mẫu
-        matches = face_recognition.face_distance([reference_encoding], face_encoding)
+        matches = face_recognition.face_distance(reference_encodings, face_encoding)
         name = "Unknown"
 
         # Nếu khoảng cách nhỏ hơn ngưỡng (0.3 là ngưỡng mới), coi như khớp

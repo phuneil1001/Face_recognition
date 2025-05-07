@@ -1,0 +1,11 @@
+#  bỏ qua thư mục data
+data/
+data_img/
+#  bỏ qua thư mục .idea
+.idea/
+
+# bỏ qua ảnh .jpg
+*.jpg
+# bỏ qua ảnh .png
+*.png
+
