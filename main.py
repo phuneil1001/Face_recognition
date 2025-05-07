@@ -3,8 +3,9 @@ import face_recognition
 import numpy as np
 
 # Tải hình ảnh mẫu chứa khuôn mặt cần nhận diện
-reference_image = face_recognition.load_image_file(r"C:\Users\ADMIN\Desktop\face_recognition\data_img\WIN_20250507_18_34_52_Pro.jpg")
-reference_encoding = face_recognition.face_encodings(reference_image)[0]
+# load tat ca hinh anh cac file co duoi .jpg trong thu muc data_img
+reference_images = face_recognition.load_image_file(r"C:\Users\ADMIN\Desktop\face_recognition\data_img\*.jpg")
+reference_encodings = face_recognition.face_encodings(reference_images)
 
 # Khởi tạo webcam
 cap = cv2.VideoCapture(0)
@@ -34,8 +35,8 @@ while True:
         matches = face_recognition.face_distance([reference_encoding], face_encoding)
         name = "Unknown"
 
-        # Nếu khoảng cách nhỏ hơn ngưỡng (0.6 là ngưỡng mặc định), coi như khớp
-        if matches[0] < 0.6:
+        # Nếu khoảng cách nhỏ hơn ngưỡng (0.3 là ngưỡng mới), coi như khớp
+        if matches[0] < 0.4:
             name = "Known"
 
         # Vẽ hình chữ nhật quanh khuôn mặt
