@@ -1,22 +1,24 @@
 from PIL import Image
 import cv2
 import torch
-from torchvision import transforms
-from facenet_pytorch import InceptionResnetV1
+from torchvision import transforms, models
 import mediapipe as mp
 import numpy as np
 import os
 
 # ====== Config ======
-model_path = "models/facenet_classifier.pth"
-class_names = os.listdir("data/processed")  # Thư mục theo tên người
+model_path = "models/resnet50_face_classifier.pth"  # Đường dẫn đến mô hình ResNet
+data_dir = "data/processed"  # Đảm bảo đúng đường dẫn như trong file train_resnet.py
+class_names = os.listdir(data_dir)  # Thư mục theo tên người
 class_names.sort()
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# ====== Load model ======
-model = InceptionResnetV1(pretrained='vggface2', classify=True, num_classes=len(class_names)).to(device)
+# ====== Load model ResNet-50 ======
+model = models.resnet50(pretrained=False)  # Không cần pretrained vì sẽ tải mô hình đã huấn luyện
+model.fc = torch.nn.Linear(model.fc.in_features, len(class_names))  # Thay đổi lớp fully connected
 model.load_state_dict(torch.load(model_path, map_location=device))
+model.to(device)
 model.eval()
 
 # ====== MediaPipe Face Detector ======
@@ -27,7 +29,7 @@ detector = mp_face.FaceDetection(model_selection=1, min_detection_confidence=0.7
 transform = transforms.Compose([
     transforms.Resize((160, 160)),
     transforms.ToTensor(),
-    transforms.Normalize([0.5], [0.5])
+    transforms.Normalize([0.5], [0.5])  # Chuẩn hóa giống như khi train
 ])
 
 # ====== Hàm crop mặt từ frame ======
