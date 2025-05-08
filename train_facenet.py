@@ -78,4 +78,5 @@ def train_model():
 
 # Thêm cấu trúc bảo vệ cho multiprocessing
 if __name__ == '__main__':
+    multiprocessing.freeze_support() 
     train_model()

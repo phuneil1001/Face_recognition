@@ -76,3 +76,6 @@ def train_resnet():
 if __name__ == '__main__':
     multiprocessing.freeze_support()  # Cần thiết cho Windows
     train_resnet()
+
+#     print("❌ Nhấn 'q' để thoát.")
+
